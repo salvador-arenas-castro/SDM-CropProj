@@ -2,7 +2,9 @@
 # Load R libraries
 library(raster)
 library(biomod2)
+library(magrittr)
 
+source("./RCODE/AncillaryFunctions-v1.R")
 
 ## -------------------------------------------------------------------------------------- ##
 ## Parameters and initialization ----
@@ -21,7 +23,7 @@ RASTER_FILE_FORMAT <- "asc"
 # Output folder path (default points to OUTPUTS sub-folder)
 # Do not use relative paths otherwise it will cause biomod2 to fail
 # when looping through each species
-OUTPUT_FOLDER <- "C:/MyFiles/R-dev/SDM-CropProj/OUTPUTS"
+OUTPUT_FOLDER <- "C:/MyFiles/R-dev/SDM-CropProj/OUTPUTS/MODS"
 
 # Species names vector. If NULL then names will be extracted from 
 #the NAME column in the table
@@ -49,11 +51,11 @@ BIOMOD_MODEL_OPTS <- BIOMOD_ModelingOptions(GAM = list(k = 4))
 MODELS_TO_RUN <- c('GLM','GBM','GAM','CTA','ANN',
                    'FDA','MARS','RF','MAXENT.Phillips.2')
 
-# Number of evaluation rounds for holdout cross-validation. Default is 5 
-# for testing purposes only but should be higher (e.g., 10, 20, 30, ...). 
+# Number of evaluation rounds for holdout cross-validation. Default is 10 
+# for testing purposes only but should be slightly higher (e.g., 20, 30, ...). 
 # Be aware that very large values will make model calibration and projection 
 # very time-consuming
-NR_EVAL_ROUNDS <- 5
+NR_EVAL_ROUNDS <- 10
 
 # Percentage of data used for training the algorithms
 PERC_TRAIN <- 80
@@ -62,17 +64,28 @@ PERC_TRAIN <- 80
 # 'weighted response weights'
 PREVALENCE <- 0.5
 
-# Number of permutation to estimate variable importance. Default 0 means 
+# Number of permutation to estimate variable importance. A value of zero means 
 # that it is not estimated. Set higher (10, 20) to calculate variable 
 # importance values.
-NR_VARIMP_ROUNDS <- 0
+NR_VARIMP_ROUNDS <- 5
 
 # Evaluation metric name used to subset partial models for building the 
-# ensemble. Default is "TSS" the true-skill statistic
+# ensemble. Default is "TSS" the true-skill statistic. Other options are 
+# "ROC" or "KAPPA"
 EVAL_METRIC_NAME <- "TSS"
 
+# A value between 0-1 typically closer to 1 (e.g. 0.9) as to defined the 
+# top-best quantile of best models. Instead of defining a value for selecting 
+# the models to be combined. 
+# This option assesses the distribution of evaluation metrics in 
+# EVAL_METRIC_NAME. If NULL this will not be used. Default is 0.8 meaning 
+# that the top 20% models will be used in the ensemble.
+EVAL_QUANTILE_THRESH <- 0.8
+
 # Threshold value for the selected evaluation metric used to select 
-# partial models for building the ensemble. Default: 0.75
+# partial models for building the ensemble. Default: 0.75.
+# This will be override by EVAL_QUANTILE_THRESH if that parameter is 
+# not null.
 EVAL_METRIC_THRESH <- 0.75
 
 
@@ -136,7 +149,7 @@ for(spName in spNames){
   setwd(OUTPUT_FOLDER)
   
   # Subset the data and create a SpatialPoints object with input data
-  myRespCoord <- DataSpecies[DataSpecies$VAR==spName, c("X","Y")]
+  myRespCoord <- DataSpecies[DataSpecies$NAME == spName, c("X","Y")]
   
   # Presence records as a SpatialPoints object for each species
   spPointData <- SpatialPoints(myRespCoord, proj4string=CRS(COORD_SYSTEM))
@@ -194,20 +207,33 @@ for(spName in spNames){
   ## Perform ensemble modelling ----
   ## -------------------------------------------------------------------------------------- ##
   
+  if(!is.null(EVAL_QUANTILE_THRESH)){
+    if(EVAL_METRIC_NAME == "ROC"){
+      modSelCutoff <- quantile(evalDF.ROC, probs=EVAL_QUANTILE_THRESH, na.rm=TRUE)
+    }else if(EVAL_METRIC_NAME == "KAPPA"){
+      modSelCutoff <- quantile(evalDF.KAPPA, probs=EVAL_QUANTILE_THRESH, na.rm=TRUE)
+    }else if(EVAL_METRIC_NAME == "TSS"){
+      modSelCutoff <- quantile(evalDF.TSS, probs=EVAL_QUANTILE_THRESH, na.rm=TRUE)
+    }else{
+      stop("Unknown option in EVAL_METRIC_THRESH! Please check this.")
+    }
+  }else{
+    modSelCutoff <- EVAL_METRIC_THRESH
+  }
   
-  myBiomodEM <- BIOMOD_EnsembleModeling(modeling.output = myBiomodModelOut,
-                                        chosen.models = 'all',
-                                        em.by = 'all',
-                                        eval.metric = EVAL_METRIC_NAME,
-                                        eval.metric.quality.threshold = EVAL_METRIC_THRESH,
-                                        prob.mean = TRUE,
-                                        prob.cv = FALSE,
-                                        prob.ci = FALSE,
-                                        prob.ci.alpha = 0.05,
-                                        prob.median = TRUE,
-                                        committee.averaging = FALSE,
-                                        prob.mean.weight = TRUE,
-                                        prob.mean.weight.decay = 'proportional')
+  myBiomodEM <- BIOMOD_EnsembleModeling(modeling.output               = myBiomodModelOut,
+                                        chosen.models                 = 'all',
+                                        em.by                         = 'all',
+                                        eval.metric                   = EVAL_METRIC_NAME,
+                                        eval.metric.quality.threshold = modSelCutoff,
+                                        prob.mean                     = TRUE,
+                                        prob.cv                       = FALSE,
+                                        prob.ci                       = FALSE,
+                                        prob.ci.alpha                 = 0.05,
+                                        prob.median                   = TRUE,
+                                        committee.averaging           = FALSE,
+                                        prob.mean.weight              = TRUE,
+                                        prob.mean.weight.decay        = 'proportional')
   
   
   # Get evaluation scores for the Ensemble Modelling stage
