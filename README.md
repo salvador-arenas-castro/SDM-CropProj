@@ -21,41 +21,46 @@ suitability and distribution of the response variable (i.e. presence/absence of 
 crop(s), more specifically olive varieties)
 
    - _Current_: spatial data in raster format (filetype: ESRI ASCII) for current conditions. 
-   The Coordinate Reference System is WGS 1894 Geographic. All data layers contain the same 
+   Test data Coordinate Reference System is WGS 1894 Geographic. All data layers contain the same 
    number of columns and rows as well as equal spatial extent as to allow their overlap. 
    Climatic variables (see list below: 1,2,5,6,8) represent average values for the interval 1961-2000. 
    The following variables are included:
 
-   |File name           |Description                          |
-   |--------------------|-------------------------------------|
-   |1._et_ref.asc_      |evapotranspiration (EVTP; mm/year)   |
-   |2. _ic.asc_         |continentality index (IDCT; °C)      |
-   |3. _orient.asc_     |solar orientation (SLOR; degrees)    |
-   |4. _ph.asc_         |Soil pH                              |
-   |5. _preci_oto.asc_  |autumn precipitation (PRAU; mm)      |
-   |6. _preci_ver.asc_  |summer precipitation (PRSM; mm)      |
-   |7. _pte_pct.asc_    |slope (SLPC; %)                      |
-   |8. _t_med_inv.asc_  |average winter temperature (TPWT; °C)|
+   |File name           |Description                           |
+   |--------------------|--------------------------------------|
+   |1._et_ref.asc_      |evapotranspiration (EVTP; mm/year)    |
+   |2. _ic.asc_         |continentality index (IDCT; °C)       |
+   |3. _orient.asc_     |solar orientation (SLOR; degrees)     |
+   |4. _ph.asc_         |Soil pH                               |
+   |5. _prec_oto.asc_   |autumn precipitation (PRAU; mm)       |
+   |6. _prec_ver.asc_   |summer precipitation (PRSM; mm)       |
+   |7. _pte_pct.asc_    |slope (SLPC; %)                       |
+   |8. _tmed_inv.asc_   |average winter temperature (TPWT; °C) |
 
-   - _Future_: To understand the future distribution and assess the environmental suitability 
-   of each olive variety, we used the Local Scenarios of Climate Change of Andalusia (ELCCA) 
-   (URL: http://www.juntadeandalucia.es/medioambiente/site/rediam). These regional climate 
-   change scenarios were specifically developed for the Andalusia region to represent the changes 
-   expected in the climate in the coming decades, according to studies carried out on a planetary scale. 
-   The following projection dates are included (*): 
+   - _Future_: This directory contains a set of sub-folders one for each required projection 
+   scenario/date.For testing purposes, the example data includes the Local Scenarios of Climate 
+   Change of Andalusia (ELCCA) (URL: http://www.juntadeandalucia.es/medioambiente/site/rediam). 
+   These regional climate change scenarios were specifically developed for the Andalusia region 
+   to represent the changes expected in the climate in the coming decades, according to studies 
+   carried out on a planetary scale. More specifically, the following projection dates are 
+   included (*): 
       - 2040
       - 2070
       - 2100
 
    (*) NOTE: only climatic variables (1,2,5,6,8) are changed in relation to current conditions. 
-    The remaining variables (3,4,7) are copies since these are considered temporally "static".
+    The remaining variables (3,4,7) are copies since these are considered temporally "static". 
+    For simplicity sake, it is better to copy static variables for each projection folder.
+
+File names of predictor variables inside the current and future folders must all be the same 
+since these will be used as names for the predictor variables in biomod2 modelling routines.
 
 - __ProductivityData__: multi-year (2010-2014) olive crop production data (in tons) 
 and cultivated surface area for Andalusia (filename: _Olive_ProductionSurface_Andalusia_2010_2014.csv_).
 
 - __Regions__: a raster dataset containing administrative regions
 
-- __ResponseVariables__: Presence records for each target crop(s), in this case olive varieties for the 
+- __ResponseVariable__: Presence records for each target crop(s), in this case olive varieties for the 
 spanish Andalusia region. Table _OLIVE_VARIETIES_DATA_all.csv_ contains presence-only data for eight 
 varieties in total:
 
@@ -70,13 +75,19 @@ varieties in total:
    |Picual                | Pcl  | Very frequent olive-tree variety in plant nursery  | 18677      |
    |Verdial de Huévar     | Vrd  | Traditional olive-tree variety                     | 865        |
 
-   - The table has three columns:
+   - The table has four columns:
       - ID: observation identifier	
       - X: longitude (decimal degrees)
       - Y: latitude (decimal degrees)
-      - OLIVE_VARIETY (olive variety code - see table above)
+      - NAME: name of the crop species or variety (i.e. olive variety code - see table above)
 
 
 # 3. Workflow
 
+TODO
+
 # 4. Contact us
+
+Salvador Arenas-Castro: salvadorarenascastro [at] cibio.up.pt
+
+João F Gonçalves: joao.goncalves [at] cibio.up.pt
