@@ -4,7 +4,7 @@ This repository contains code and data for running the Arenas-Castro & Gonçalve
 framework for forecasting olive crop habitat suitability and production. 
 
 Despite this framework has been implemented and tested with several olive crop varieties 
-it is expected to be applicable to other crops.
+it is expected to be applicable to other crops and agroecosystems.
 
 # 1. Folder structure
 
