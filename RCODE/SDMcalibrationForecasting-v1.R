@@ -37,7 +37,7 @@ source("./RCODE/AncillaryFunctions-v1.R")
 # Input table with x,y species records located in DATA/ResponseVariable
 SOURCE_INPUT_TABLE <- "OLIVE_VARIETIES_DATA_all.csv"
 
-# Raster file format for predicotr data. This will be used to scan the 
+# Raster file format for predictor data. This will be used to scan the 
 # DATA/PredictorVariables folder and build one raster stack object for each 
 # projection scenario/date
 RASTER_FILE_FORMAT <- "asc"
@@ -48,7 +48,7 @@ RASTER_FILE_FORMAT <- "asc"
 OUTPUT_FOLDER <- "C:/MyFiles/R-dev/SDM-CropProj/OUTPUTS/MODS"
 
 # Species names vector. If NULL then names will be extracted from 
-#the NAME column in the table
+# the NAME column in the table
 SPECIES_NAMES <- NULL
 
 # Coordinate system of the data (must be the same for species records and 
@@ -97,8 +97,8 @@ NR_VARIMP_ROUNDS <- 5
 EVAL_METRIC_NAME <- "TSS"
 
 # A value between 0-1 typically closer to 1 (e.g. 0.9) as to defined the 
-# top-best quantile of best models. Instead of defining a value for selecting 
-# the models to be combined. 
+# top-best quantile of best models. Use this instead of defining a specific 
+# value for selecting the models to be combined. 
 # This option assesses the distribution of evaluation metrics in 
 # EVAL_METRIC_NAME. If NULL this will not be used. Default is 0.8 meaning 
 # that the top 20% models will be used in the ensemble.
@@ -134,6 +134,10 @@ if(is.null(SPECIES_NAMES)){
 current    <- stack(list.files(path="./DATA/PredictorVariables/Current", 
                                pattern='.asc$',full.names=TRUE))               
 crs(current) <- CRS(COORD_SYSTEM)
+
+if(!is.null(COORD_SYSTEM)){
+  crs(current) <- CRS(COORD_SYSTEM)
+}
 
 # List the directories holding environmental data used for future projections
 projDirs <- list.dirs("./DATA/PredictorVariables/Future", recursive = FALSE)
@@ -282,7 +286,7 @@ for(spName in spNames){
   
   
   ## -------------------------------------------------------------------------------------- ##
-  ## Obtain spatiotemporal projections ----
+  ## Obtain spatio-temporal projections ----
   ## -------------------------------------------------------------------------------------- ##
   
   # Models to consider in the ensemble and projection
@@ -291,10 +295,10 @@ for(spName in spNames){
   
   for(projName in projNames){
     
-    # Obtain spatiotemporal projections
+    # Obtain spatio-temporal projections from each selected model
     myBiomodProj <- BIOMOD_Projection(modeling.output = myBiomodModelOut,
                                       new.env         = get(projName),
-                                      proj.name       = projName, ## Name of the projection from above variable proj.name
+                                      proj.name       = projName, ## Name of the projection
                                       selected.models = modelsToUse,
                                       filtered.meth   = NULL,
                                       binary.meth     = NULL,
@@ -303,8 +307,7 @@ for(spName in spNames){
                                       output.format   = '.grd',
                                       do.stack        = TRUE)
     
-    
-    # Perform the ensembling of projections
+    # Perform the ensembling of projections from previous step
     myBiomodEF <- BIOMOD_EnsembleForecasting(projection.output = myBiomodProj,
                                              binary.meth       = c('ROC','TSS','KAPPA'),
                                              EM.output         = myBiomodEM,
