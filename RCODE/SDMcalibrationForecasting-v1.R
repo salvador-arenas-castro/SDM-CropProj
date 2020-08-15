@@ -232,6 +232,12 @@ for(spName in spNames){
     modSelCutoff <- EVAL_METRIC_THRESH
   }
   
+  # Adjust threshold value if the quantile is equal to 1
+  if(modSelCutoff == 1){
+    modSelCutoff <- 0.99
+  }
+  
+  # Perform the ensemble modeling step by selecting target models and define how to combine them
   myBiomodEM <- BIOMOD_EnsembleModeling(modeling.output               = myBiomodModelOut,
                                         chosen.models                 = 'all',
                                         em.by                         = 'all',
