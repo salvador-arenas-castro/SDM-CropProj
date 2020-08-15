@@ -2,7 +2,7 @@
 # SDM-CropProj - Model assisted framework to forecast the environmental suitability and production of crops
 
 <img src="https://upload.wikimedia.org/wikipedia/commons/8/84/Olivesfromjordan.jpg" 
-alt="Olive tree in Jordan" style="width: 250px;"/>
+alt="Olive tree in Jordan" style="width: 180px;"/>
 
 This repository contains code and data for running the Arenas-Castro & Gonçalves (2020) 
 framework for forecasting olive crop environmental suitability as well as total annual 
@@ -20,7 +20,7 @@ and other agroecosystems worldwide.
 - __RCODE__: scripts used to implement the workflow
 
 ![warning-icon](https://img.icons8.com/emoji/48/000000/warning-emoji.png)
-__IMPORTANT NOTE__: do not change the name of these folders as this will be prevent the 
+__WARNING__: do not change the name of these folders as this will be prevent the 
 analysis from running properly.
 
 
@@ -61,13 +61,15 @@ crop(s), more specifically olive varieties)
       - 2100
 
 ![info-icon](https://img.icons8.com/flat_round/48/000000/info.png)
-NOTE: only climatic variables (1,2,5,6,8) are changed in relation to current conditions. 
+__NOTE__: only climatic variables (1,2,5,6,8) are changed in relation to current conditions. 
 The remaining variables (3,4,7) are copies since these are considered temporally "static". 
 For simplicity sake, it is better to copy static variables for each projection folder.
 
-File names of predictor variables inside the current and future folders must be exactly the same 
+![warning-icon](https://img.icons8.com/emoji/48/000000/warning-emoji.png)
+__WARNING__: File names of predictor variables inside the current and future folders must be exactly the same 
 since these will be used as names for the predictor variables in biomod2 modelling routines. 
 Modifying file names or having differences between them will cause the projection step to fail!!
+
 
 - __ProductivityData__: multi-year (2010-2014) olive crop production data (in tons) 
 and cultivated surface area for Andalusia (filename: _Olive_ProductionSurface_Andalusia_2010_2014.csv_).
@@ -97,14 +99,14 @@ varieties in total:
 
 
 ![warning-icon](https://img.icons8.com/emoji/48/000000/warning-emoji.png)
-__IMPORTANT NOTE__: do not change the names of the fields/columns in the input table 
+__WARNING__: do not change the names of the fields/columns in the input table 
 containing species records! These are fixed or "hard-coded" and will make the analysis fail 
 if modified. If you have a previous table with input x,y records do not forget to adjust the 
 header according to these names.
 
 
 ![warning-icon](https://img.icons8.com/emoji/48/000000/warning-emoji.png)
-__IMPORTANT NOTE__: do not change the name of these sub-folders as this will be prevent the 
+__WARNING__: do not change the name of these sub-folders as this will be prevent the 
 analysis from working properly. Exception of course for subfolder(s) name(s) inside 
 _PredictorVariables/Future_.
 
