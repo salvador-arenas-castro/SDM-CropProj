@@ -202,6 +202,17 @@ for(spName in spNames){
   write.csv(evalDF.KAPPA, file = paste(getwd(),"/",spName,"/",
                                        spName,"_evalDF_KAPPA.csv",sep=""))
   
+  # Calculate variable importance across all PA sets, eval rouns and algorithms 
+  varImportance <- get_variables_importance(myBiomodModelOut)
+  varImportanceByVariableAVG <- apply(varImportance,1,mean, na.rm=TRUE)
+  varImportanceByVariableSTD <- apply(varImportance,1,sd, na.rm=TRUE)
+  vimpDF <- data.frame(cnames    = names(varImportanceByVariableAVG),
+                       vimpAVG   = varImportanceByVariableAVG, 
+                       varImpSTD = varImportanceByVariableSTD) %>% 
+    arrange(desc(vimpAVG))
+  
+  print(vimpDF)
+  write.csv(vimpDF, file = paste(getwd(),"/",spName,"/",spName,"_varImportance.csv",sep=""))
   
   ## -------------------------------------------------------------------------------------- ##
   ## Perform ensemble modelling ----
