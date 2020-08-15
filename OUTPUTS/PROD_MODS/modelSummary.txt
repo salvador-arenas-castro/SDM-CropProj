@@ -1,0 +1,17 @@
+MODEL INFO:
+Observations: 8
+Dependent Variable: prod_log10
+Type: OLS linear regression 
+
+MODEL FIT:
+F(1,6) = 7.24, p = 0.04
+R² = 0.55
+Adj. R² = 0.47 
+
+Standard errors: OLS
+-----------------------------------------------------
+                          Est.   S.E.   t val.      p
+--------------------- -------- ------ -------- ------
+(Intercept)             -15.03   7.61    -1.97   0.10
+totalArea_log10           2.08   0.77     2.69   0.04
+-----------------------------------------------------
