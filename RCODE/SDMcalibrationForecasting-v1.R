@@ -6,8 +6,30 @@ library(magrittr)
 
 source("./RCODE/AncillaryFunctions-v1.R")
 
+
 ## -------------------------------------------------------------------------------------- ##
-## Parameters and initialization ----
+## EXPECTED INPUTS ----
+## -------------------------------------------------------------------------------------- ##
+
+# To run the biomod2 ensemble modeling framework you will need the following inputs:
+# 
+# (i) a csv table with known presence locations (x,y or lat/lon) for the target 
+# species/varieties of interest
+#
+# (ii) A set of predictor variables known to influence or constraint the environmental 
+# suitability of the target species/varieties. These data must be raster-based and portray 
+# current conditions temporally coherent with the presence locations. Separate files are 
+# expected for each variable (single-band). Do not use multi-band files!!
+# Allowed file formats include ESRI ASCII, GeoTIFF, ... (any compatible with GDAL).
+#
+# (iii) a set of layers representing the same variables as in (ii) (and with the same names) 
+# for obtaining model-based projections for future climate (or land-use) conditions based on 
+# a certain global or regional scenario(s) of change.
+# 
+
+
+## -------------------------------------------------------------------------------------- ##
+## INPUT PARAMETERS ----
 ## -------------------------------------------------------------------------------------- ##
 
 # NOTE: THESE PARAMETERS MUST BE SET PRIOR TO RUNNING MODELS
