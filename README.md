@@ -1,5 +1,5 @@
 
-# SDM-CropProj - Model assisted framework to forecast the environmental suitability and production of crops
+# SDM-CropProj - Model-assisted framework to forecast the environmental suitability and production of crops
 
 <img src="https://upload.wikimedia.org/wikipedia/commons/8/84/Olivesfromjordan.jpg" 
 alt="Olive tree in Jordan" style="width: 180px;"/>
